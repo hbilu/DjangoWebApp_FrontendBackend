@@ -1,4 +1,4 @@
-# Hacer Bilu Guresci SnT Assignment
+# DjangoWebApp_FrontendBackend
 
 ## Overview
 This project is a Dockerized Django web application (Frontend and Backend) using Python, REST API, a MySQL database, JavaScript, HTML and CSS. 
