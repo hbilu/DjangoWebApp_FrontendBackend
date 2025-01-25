@@ -3,6 +3,10 @@
 ## Overview
 This project is a Dockerized Django web application (Frontend and Backend) using Python, REST API, a MySQL database, JavaScript, HTML and CSS. 
 
+Click on the image below to view the video featuring a screen recording of this project.
+
+[![Watch the video](https://img.youtube.com/vi/-W3MWpNoco8/maxresdefault.jpg)](https://youtu.be/-W3MWpNoco8)
+
 ---
 
 ## Project Structure
@@ -49,7 +53,7 @@ docker-compose build
 ```
 ### Step 2: Start Containers
 ```bash
-docker-compose up
+docker-compose up -d
 ```
 ### Step 3: Verify Services
 - Web service: [http://localhost:8000](http://localhost:8000)
