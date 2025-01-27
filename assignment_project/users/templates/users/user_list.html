@@ -141,8 +141,8 @@
             const newStatus = target.id === 'active-list'; // Determine new active status
 
             // Send the status update to the backend
-            fetch('/api/users/status/', {
-                method: 'PUT', // HTTP POST request to update user status
+            fetch('/api/status/', {
+                method: 'PATCH', // HTTP PATCH request to update user status
                 headers: {
                     'Content-Type': 'application/json',
                 },

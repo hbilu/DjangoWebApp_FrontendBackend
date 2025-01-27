@@ -56,9 +56,9 @@ class UpdateUserStatusView(APIView):
     This view is used by the drag-and-drop functionality in the frontend (user_list.html) to change the user's status dynamically.
     
     """
-    def put(self, request):
+    def patch(self, request):
         """
-        Handles PUT requests to update a user's active status.
+        Handles PATCH requests to update a user's active status.
         Args: 
             request(HttpRequest) contains
                 - 'id' (int): The user's ID.

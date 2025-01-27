@@ -18,10 +18,15 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import include
 from django.views.generic import TemplateView
+from users.views import UserListView, UpdateUserStatusView
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name="main_page.html"), name='main_page'),
-    path('api/users/', include('users.urls')), # API-related routes for users
+    # REST API routes 
+    path('api/', include([
+        path('users/', UserListView.as_view(), name='api_user_list'),
+        path('status/', UpdateUserStatusView.as_view(), name='api_update_status'),
+    ])), 
     path('users/', include('users.urls')), # UI routes for users
     path('films/', include('films.urls')), 
     path('admin/', admin.site.urls), # Admin panel
