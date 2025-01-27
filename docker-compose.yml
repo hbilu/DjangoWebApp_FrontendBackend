@@ -1,4 +1,6 @@
 version: '3.9'
+volumes:
+  db_data:
 services:
   db:
     image: mysql:8.0
@@ -7,16 +9,18 @@ services:
     ports:
       - "3306:3306"
     volumes:
+      - db_data:/var/lib/mysql
       - ./sql_files:/docker-entrypoint-initdb.d
     healthcheck:
-     test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+     test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root --password=$MYSQL_ROOT_PASSWORD || exit 1"]
      interval: 10s
      timeout: 5s
      retries: 5
 
   web:
     build: .
-    command: python assignment_project/manage.py runserver 0.0.0.0:8000 
+    command: >
+      sh -c "sleep 10 && python assignment_project/manage.py runserver 0.0.0.0:8000"
     env_file:
       - .env
     volumes:
