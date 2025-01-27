@@ -67,8 +67,3 @@ docker-compose down
 ```
 
 ---
-
-## Notes
-- This setup uses `mysql.connector.django` as the database backend (`settings.py`). It is also added to the `requirements.txt`
-- The `time.sleep(20)` wait in `manage.py` ensures Django waits for the database to initialize web service.
-- Charts are enlarged when clicked on each of them and detailed data are shown when mouse is over the related part.
