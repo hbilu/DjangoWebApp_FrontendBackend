@@ -139,3 +139,36 @@ class UpdateUserStatusViewTests(TestCase):
 
         # Assert the staff's status was updated to active (True)
         self.assertTrue(staff.active)
+
+    def test_update_invalid_user_type(self):
+        """
+        Test case to ensure that an invalid user type results in a 400 Bad Request response.
+
+        Asserts:
+            - The response status code is 400 (Bad Request).
+        """
+
+        data = {
+            'id': 3,
+            'type': 'artist',  # Invalid user type, should be 'customer' or 'staff'
+            'active': False
+        }
+        response = self.client.patch(self.update_status_url, data, format='json')
+
+        # Assert that the response status code is 400 (Bad Request), as the user type is invalid
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_invalid_user_id(self):
+        """
+        Test case to ensure that an invalid user id results in a 404 Not Found response.
+        """
+
+        data = {
+            'id': 1000,       # invalid user ID, no user exists with ID 1000 in the test database
+            'type': 'staff',
+            'active': True
+        }
+        response = self.client.patch(self.update_status_url, data, format='json')
+        
+        # Assert that the response status code is 404 (Not Found), as the user with ID 1000 does not exist
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
