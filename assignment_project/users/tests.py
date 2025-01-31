@@ -66,3 +66,76 @@ class UserViewsTestCase(TestCase):
         self.assertTrue(any(user['first_name'] == 'Green' for user in inactive_users))  # Inactive customer
         self.assertTrue(any(user['first_name'] == 'Lila' for user in inactive_users))  # Inactive staff
     
+class UpdateUserStatusViewTests(TestCase):
+    """
+    Test case for the UpdateUserStatusView API endpoint.
+    """
+
+    def setUp(self):
+        """
+        Set up the environment for the test by creating test data and initializing the API client.
+        """
+
+        self.client = APIClient()
+        self.update_status_url = reverse('api_update_status')
+
+        self.customer = Customer.objects.create(customer_id=3, first_name='Red', last_name='Customer', active=True)
+        self.staff = Staff.objects.create(staff_id=3, first_name='Yellow', last_name='Staff', active=False)
+    
+    def test_update_customer_status(self):
+        """
+        Test case to update the status of an active customer to inactive.
+
+        Asserts:
+            - An active customer exists for the update.
+            - The PATCH request is processed successfully (status code 200).
+            - The customer's status is correctly updated in the database.
+        """
+
+        customer = Customer.objects.filter(active=True).first()
+        self.assertIsNotNone(customer, "No active customer found for testing.")
+
+        # Prepare the data payload for the PATCH request; updating the customer to set 'active' to False
+        data = {
+            'id': customer.customer_id,
+            'type': 'customer',
+            'active': False
+        }
+
+        # Send a PATCH request to the update status endpoint with the data
+        response = self.client.patch(self.update_status_url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Refresh the customer object from the database to get the updated status
+        customer.refresh_from_db()
+
+        # Assert the customer's status was updated to inactive (False)
+        self.assertFalse(customer.active)
+
+    def test_update_staff_status(self):
+        """
+        Test case to update the status of an inactive staff to active.
+
+        Asserts:
+            - An inactive staff exists for the update.
+            - The PATCH request is processed successfully (status code 200).
+            - The staff's status is correctly updated in the database.
+        """
+        
+        staff = Staff.objects.filter(active=False).first()
+        self.assertIsNotNone(staff, "No inactive staff found for testing.")
+
+        # Prepare the data payload for the PATCH request; updating the staff to set 'active' to True
+        data = {
+            'id': staff.staff_id,
+            'type': 'staff',
+            'active': True
+        }
+
+        response = self.client.patch(self.update_status_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        staff.refresh_from_db()
+
+        # Assert the staff's status was updated to active (True)
+        self.assertTrue(staff.active)
