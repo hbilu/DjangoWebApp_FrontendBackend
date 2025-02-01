@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from .models import Customer, Staff
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 
 # Create your views here.
 
@@ -17,17 +18,29 @@ class UserListView(APIView):
         Handles GET requests to retrieve lists of active and inactive users.
 
         Queries the 'Customer' and 'Staff' models for active and inactive users to fetch users categorized by their active status.
+        Optionally, it filters users based on a search term that matches the first or last name.
 
         Returns a JSON object with two keys as Response:
             - 'active users': List of active users, including both customers and staffs, with unified fields ('id', 'type', etc.).
             - 'inactive users': List of inactive users, formatted similarly to active users.
 
         """
-        # Querying the database for active and inactive users (customer and staff), sorting them by the last update timestamp.
-        active_customers = Customer.objects.filter(active=True).order_by('-last_update').values('customer_id', 'first_name', 'last_name', 'active','last_update')
-        inactive_customers = Customer.objects.filter(active=False).order_by('-last_update').values('customer_id', 'first_name', 'last_name', 'active','last_update')
-        active_staff = Staff.objects.filter(active=True).order_by('-last_update').values('staff_id', 'first_name', 'last_name', 'active','last_update')
-        inactive_staff = Staff.objects.filter(active=False).order_by('-last_update').values('staff_id', 'first_name', 'last_name', 'active','last_update')
+
+        # Get and clean the 'search' parameter from the GET request (defaults to empty string if not provided)
+        search_term = request.GET.get('search', '').strip()
+
+        # Initialize an empty Q object to build a dynamic query filter based on the search term.
+        query_filter = Q()
+
+        # If a search term is provided, filter users by first or last name (case-insensitive)
+        if search_term:
+            query_filter = Q(first_name__icontains=search_term) | Q(last_name__icontains=search_term)
+
+        # Querying the database for active and inactive users (customer and staff) with the search filter, sorting them by the last update timestamp.
+        active_customers = Customer.objects.filter(active=True).filter(query_filter).order_by('-last_update').values('customer_id', 'first_name', 'last_name', 'active','last_update')
+        inactive_customers = Customer.objects.filter(active=False).filter(query_filter).order_by('-last_update').values('customer_id', 'first_name', 'last_name', 'active','last_update')
+        active_staff = Staff.objects.filter(active=True).filter(query_filter).order_by('-last_update').values('staff_id', 'first_name', 'last_name', 'active','last_update')
+        inactive_staff = Staff.objects.filter(active=False).filter(query_filter).order_by('-last_update').values('staff_id', 'first_name', 'last_name', 'active','last_update')
 
         # Reformat the data for users (active/inactive customers/staff) to unify keys (id, type)
         for user in active_customers:
