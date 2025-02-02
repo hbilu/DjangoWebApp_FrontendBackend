@@ -5,7 +5,7 @@ This project is a Dockerized Django web application (Frontend and Backend) using
 
 Click on the image below to view the video featuring a screen recording of this project.
 
-[![Watch the video](https://img.youtube.com/vi/-W3MWpNoco8/maxresdefault.jpg)](https://youtu.be/-W3MWpNoco8)
+[![Watch the video](https://img.youtube.com/vi/E0KCLhKnEH0/maxresdefault.jpg)](https://youtu.be/E0KCLhKnEH0)
 
 ---
 
