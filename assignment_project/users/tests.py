@@ -234,3 +234,24 @@ class SearchFeatureTestCase(TestCase):
         self.assertEqual(len(inactive_users), 1)
         # Assert that the returned user's last name is 'White'
         self.assertEqual(inactive_users[0]['last_name'], 'White')
+
+    def test_search_case_insensivity(self):
+        """
+        Test that the search functionality is case-insensitive.
+
+        Sends a GET request with a lowercase search term ('red') and verifies:
+            - The response status is HTTP 200 OK.
+            - The correct user with the name 'Red' (originally capitalized) is returned in the inactive users list.
+            - Ensures no active users are incorrectly matched.
+        """
+
+        response = self.client.get(self.user_list_url, {'search':'red'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.json()
+        active_users = data['active_users']
+        inactive_users = data['inactive_users']
+        self.assertEqual(len(active_users),0)
+
+        # Assert that exactly one inactive user is returned with the name 'Red' even though the search term is 'red' (testing case insensitivity)
+        self.assertEqual(len(inactive_users),1)
+        self.assertEqual(inactive_users[0]['first_name'], 'Red')
