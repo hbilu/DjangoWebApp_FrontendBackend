@@ -281,3 +281,20 @@ class SearchFeatureTestCase(TestCase):
         self.assertEqual(active_users[1]['last_name'], 'Purple')
 
         self.assertEqual(len(inactive_users), 0)
+    
+
+    def test_search_no_results(self):
+        """
+        Test the search functionality when no users match the search term.
+
+        Sends a GET request with a search term ('Ruby') that doesn't exist in any user data and verifies:
+            - The response status is HTTP 200 OK.
+            - Both active and inactive user lists are empty, ensuring the search returns no results when there are no matches.
+        """
+        response = self.client.get(self.user_list_url, {'search':'Ruby'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.json()
+        active_users = data['active_users']
+        inactive_users = data['inactive_users']
+        self.assertEqual(len(active_users), 0)
+        self.assertEqual(len(inactive_users), 0)
