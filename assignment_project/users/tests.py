@@ -255,3 +255,29 @@ class SearchFeatureTestCase(TestCase):
         # Assert that exactly one inactive user is returned with the name 'Red' even though the search term is 'red' (testing case insensitivity)
         self.assertEqual(len(inactive_users),1)
         self.assertEqual(inactive_users[0]['first_name'], 'Red')
+    
+    def test_search_partial_match(self):
+        """
+        Test that the search functionality supports partial matches.
+
+        Sends a GET request with a partial search term ('ur') and verifies:
+            - The response status is HTTP 200 OK.
+            - Users whose last names contain the partial search term are returned.
+            - Confirms that both matching active users are correctly returned.
+            - Ensures no inactive users are incorrectly matched.
+        """
+
+        response = self.client.get(self.user_list_url, {'search':'ur'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.json()
+        active_users = data['active_users']
+        inactive_users = data['inactive_users']
+
+        # Assert that exactly two active users are returned
+        self.assertEqual(len(active_users), 2)
+        
+        # Assert that the returned users have 'Turquoise' and 'Purple' in their last names
+        self.assertEqual(active_users[0]['last_name'], 'Turquoise')
+        self.assertEqual(active_users[1]['last_name'], 'Purple')
+
+        self.assertEqual(len(inactive_users), 0)
