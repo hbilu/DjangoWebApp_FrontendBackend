@@ -172,3 +172,65 @@ class UpdateUserStatusViewTests(TestCase):
         
         # Assert that the response status code is 404 (Not Found), as the user with ID 1000 does not exist
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+class SearchFeatureTestCase(TestCase):
+    """
+    Test case for the search feature in the UserListView API endpoint.
+    """
+
+    def setUp(self):
+        """
+        Set up the environment for the test by creating test data and initializing the API client.
+        """
+        self.client = APIClient()
+        self.user_list_url = reverse('api_user_list')
+        self.customer1 = Customer.objects.create(customer_id=1, first_name='Blue', last_name='Turquoise', active=True)
+        self.customer2 = Customer.objects.create(customer_id=2, first_name='Green', last_name='Orange', active=False)
+        self.staff1 = Staff.objects.create(staff_id=1, first_name='Lila', last_name='Purple', active=True)
+        self.staff2 = Staff.objects.create(staff_id=2, first_name='Red', last_name='White', active=False)
+    
+    def test_search_by_first_name(self):
+        """
+        Test the search functionality by first name.
+
+        Sends a GET request with the search term as a first name and verifies:
+            - The response status is HTTP 200 OK.
+            - Only users with the matching first name are returned.
+            - The correct user is included in the active users list.
+        """
+
+        # GET request to search for users with first name 'Blue'
+        response = self.client.get(self.user_list_url, {'search':'Blue'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.json()
+        active_users = data['active_users']
+        inactive_users = data['inactive_users']
+        
+        # Assert that exactly one active user is returned
+        self.assertEqual(len(active_users), 1)
+        # Assert that the returned user's first name is 'Blue'
+        self.assertEqual(active_users[0]['first_name'], 'Blue')
+        # Assert that no inactive users are returned
+        self.assertEqual(len(inactive_users), 0)
+    
+    def test_search_by_last_name(self):
+        """
+        Test the search functionality by last name.
+
+        Sends a GET request with the search term as a last name and verifies:
+            - The response status is HTTP 200 OK.
+            - Only users with the matching last name are returned.
+            - The correct user is included in the inactive users list.
+        """
+        response = self.client.get(self.user_list_url, {'search':'White'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.json()
+        active_users = data['active_users']
+        inactive_users = data['inactive_users']
+
+        self.assertEqual(len(active_users), 0)
+        # Assert that exactly one inactive user is returned
+        self.assertEqual(len(inactive_users), 1)
+        # Assert that the returned user's last name is 'White'
+        self.assertEqual(inactive_users[0]['last_name'], 'White')
