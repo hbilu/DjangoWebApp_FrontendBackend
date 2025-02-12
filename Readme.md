@@ -1,7 +1,13 @@
 # DjangoWebApp_FrontendBackend
 
 ## Overview
-This project is a Dockerized Django web application (Frontend and Backend) using Python, REST API, a MySQL database, JavaScript, HTML and CSS. 
+This project is a Dockerized Django web application (Frontend and Backend) built with Python, REST API, a MySQL database, JavaScript, HTML and CSS. 
+
+* Easily manage users with a **drag-and-drop interface** to update their status.
+* Quickly find users by first or last name with the **search feature**.
+* Explore detailed film statistics through **dynamic visualizations**.
+* View rental trends, earnings, and customer preferences with clear **charts and graphs**.
+* Click on any **chart/graph** to **enlarge** it and explore detailed breakdowns of the visualized data.
 
 Click on the image below to view the video featuring a screen recording of this project.
 
