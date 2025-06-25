@@ -58,8 +58,8 @@ jobs:
     
     - name: Load database schema
       run: |
-        mysql -h127.0.0.1 -uroot -phacer123 sakila < sql_files/schema.sql
-        mysql -h127.0.0.1 -uroot -phacer123 sakila < sql_files/data.sql
+        mysql -h127.0.0.1 -uroot -phacer123 sakila < sql_files/01_sakila-schema.sql
+        mysql -h127.0.0.1 -uroot -phacer123 sakila < sql_files/02_sakila-data.sql
 
     - name: Run Django tests
       run: |
@@ -71,10 +71,10 @@ jobs:
 
     - name: Docker Compose up
       run: |
-        docker-compose up -d --build
-        sleep 10  # optional: wait for services to boot
-        docker-compose ps
+        docker compose up -d --build
+        sleep 10
+        docker compose ps
 
     - name: Docker Compose down
       if: always()
-      run: docker-compose down
+      run: docker compose down
