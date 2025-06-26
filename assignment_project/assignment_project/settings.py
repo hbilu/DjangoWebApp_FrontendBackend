@@ -25,13 +25,14 @@ SECRET_KEY = 'django-insecure-52ha024&9bc)we&2dzsmg2-_2xf_-sjh*h8o@lplpgbgb)d-$7
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
+
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-# ALLOWED_HOSTS = [] # '13.50.208.98', 'localhost'
 if DEBUG:
     ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 else:
     ALLOWED_HOSTS = ["13.50.208.98"]
+
 
 # Application definition
 
@@ -89,7 +90,7 @@ DATABASES = {
         'NAME': os.getenv("MYSQL_DATABASE"),
         'USER': os.getenv("MYSQL_USER"),
         'PASSWORD': os.getenv("MYSQL_PASSWORD"),
-        'HOST': 'db',  # Service name defined in docker-compose.yml
+        'HOST': os.getenv("MYSQL_HOST", "db"),  # MYSQL_HOST supports GitHub Actions, db supports Docker
         'PORT': '3306',
     }
 }
