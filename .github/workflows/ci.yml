@@ -56,7 +56,10 @@ jobs:
           echo "Waiting for MySQL to start..."
           sleep 3
         done
-    
+    - name: Grant full permissions to hacer
+      run: |
+        mysql -h127.0.0.1 -uroot -phacer123 -e "GRANT ALL PRIVILEGES ON *.* TO 'hacer'@'%' WITH GRANT OPTION;"
+
     - name: Load database schema
       run: |
         mysql -h127.0.0.1 -uroot -phacer123 sakila < sql_files/01_sakila-schema.sql
