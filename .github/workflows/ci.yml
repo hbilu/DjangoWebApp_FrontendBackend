@@ -76,7 +76,7 @@ jobs:
     - name: Run Django tests
       run: |
         cd assignment_project
-        python manage.py test
+        python manage.py test --keepdb
 
     - name: Docker build test
       run: docker build -t assignment-app .
